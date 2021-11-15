@@ -1,13 +1,5 @@
 version: '2.1'
 
-networks:
-  monitor-net:
-    driver: bridge
-
-volumes:
-    prometheus_data: {}
-    grafana_data: {}
-
 services:
 
   prometheus:
@@ -24,10 +16,10 @@ services:
       - '--storage.tsdb.retention.time=200h'
       - '--web.enable-lifecycle'
     restart: unless-stopped
-    expose:
-      - 9090
+    #expose:
+    #  - 9090
     networks:
-      - monitor-net
+      - pub_net
     labels:
       org.label-schema.group: "monitoring"
 
@@ -40,10 +32,10 @@ services:
       - '--config.file=/etc/alertmanager/config.yml'
       - '--storage.path=/alertmanager'
     restart: unless-stopped
-    expose:
-      - 9093
+    #expose:
+    #  - 9093
     networks:
-      - monitor-net
+      - pub_net
     labels:
       org.label-schema.group: "monitoring"
 
@@ -60,10 +52,10 @@ services:
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
     restart: unless-stopped
-    expose:
-      - 9100
+    #expose:
+    #  - 9100
     networks:
-      - monitor-net
+      - pub_net
     labels:
       org.label-schema.group: "monitoring"
 
@@ -77,10 +69,10 @@ services:
       - /var/lib/docker:/var/lib/docker:ro
       #- /cgroup:/cgroup:ro #doesn't work on MacOS only for Linux
     restart: unless-stopped
-    expose:
-      - 8080
+    #expose:
+    #  - 8080
     networks:
-      - monitor-net
+      - pub_net
     labels:
       org.label-schema.group: "monitoring"
 
@@ -95,10 +87,10 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - GF_USERS_ALLOW_SIGN_UP=false
     restart: unless-stopped
-    expose:
-      - 3000
+    #expose:
+    #  - 3000
     networks:
-      - monitor-net
+      - pub_net
     labels:
       org.label-schema.group: "monitoring"
 
@@ -106,10 +98,10 @@ services:
     image: prom/pushgateway:v1.2.0
     container_name: pushgateway
     restart: unless-stopped
-    expose:
-      - 9091
+    #expose:
+    #  - 9091
     networks:
-      - monitor-net
+      - pub_net
     labels:
       org.label-schema.group: "monitoring"
 
@@ -128,6 +120,6 @@ services:
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
     restart: unless-stopped
     networks:
-      - monitor-net
+      - pub_net
     labels:
       org.label-schema.group: "monitoring"
