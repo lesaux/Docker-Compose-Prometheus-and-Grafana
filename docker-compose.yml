@@ -1,5 +1,10 @@
 version: '2.1'
 
+networks:
+  default:
+    external: true
+    name: pub_net
+    
 volumes:
     prometheus_data: {}
     grafana_data: {}
