@@ -1,7 +1,7 @@
 version: '2.1'
 
 networks:
-  default:
+  pub_net:
     external: true
     name: pub_net
     
