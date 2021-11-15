@@ -5,17 +5,13 @@ networks:
     external: true
     name: pub_net
     
-volumes:
-    prometheus_data: {}
-    grafana_data: {}
-    
 services:
   prometheus:
     image: prom/prometheus:v2.17.1
     container_name: prometheus
     volumes:
-      - ./prometheus:/etc/prometheus
-      - prometheus_data:/prometheus
+      - /volume1/monitoring/prometheus:/etc/prometheus
+      - /volume1/monitoring/prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -24,8 +20,8 @@ services:
       - '--storage.tsdb.retention.time=200h'
       - '--web.enable-lifecycle'
     restart: unless-stopped
-    #expose:
-    #  - 9090
+    expose:
+      - 9090
     networks:
       - pub_net
     labels:
@@ -35,7 +31,7 @@ services:
     image: prom/alertmanager:v0.20.0
     container_name: alertmanager
     volumes:
-      - ./alertmanager:/etc/alertmanager
+      - /volume1/monitoring/alertmanager:/etc/alertmanager
     command:
       - '--config.file=/etc/alertmanager/config.yml'
       - '--storage.path=/alertmanager'
@@ -88,8 +84,8 @@ services:
     image: grafana/grafana:6.7.2
     container_name: grafana
     volumes:
-      - grafana_data:/var/lib/grafana
-      - ./grafana/provisioning:/etc/grafana/provisioning
+      - /volume1/monitoring/grafana_data:/var/lib/grafana
+      - /volume1/monitoring/grafana/provisioning:/etc/grafana/provisioning
     environment:
       - GF_SECURITY_ADMIN_USER=${ADMIN_USER}
       - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD}
@@ -122,7 +118,7 @@ services:
       - "9093:9093"
       - "9091:9091"
     volumes:
-      - ./caddy:/etc/caddy
+      - /volume1/monitoring/caddy:/etc/caddy
     environment:
       - ADMIN_USER=${ADMIN_USER}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
